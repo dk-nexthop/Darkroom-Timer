@@ -24,12 +24,12 @@ void timerCountdown(int timeCounter)//Main timer countdown, time in 1/10th displ
     if (x % 10 == 0 && !stripTestMode) bipHigh(); //tone every second
     tmButtons = buttonsRead(); //check buttons events
 
-    if(tmButtons==128 ) //stop to resume
+    if(tmButtons == START_BUTTON ) //stop to resume
     {
       resumeTime = x;//set resume time
       x=0;//end timer loop
     }
-    if (tmButtons==1) //Cancel countdown
+    if (tmButtons == CANCEL_BUTTON) //Cancel countdown
     {
        resumeTime = 0;//time reset
        x=0;//end of timer loop

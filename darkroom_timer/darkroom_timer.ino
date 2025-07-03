@@ -42,13 +42,15 @@ bool baseExposure=false;
 #define START_BUTTON 128 //S8
 
 //TM1638 Buttons Combos
-#define SHIFT_MINUS_BUTTON 33
-#define SHIFT_PLUS_BUTTON 65
-#define RESET_TO_ZERO_BUTTON 22
+#define SNAP_TO_SCALE_BUTTON 96 //S6 + S7
+#define SHIFT_MINUS_BUTTON 33 //S1 + S6
+#define SHIFT_PLUS_BUTTON 65 //S1 + S7
+#define SCALE_SETUP_BUTTON 65 //S1 + S7
+#define CANCEL_SCALE_BUTTON 129 //S1 + S8
+#define RESET_TO_ZERO_BUTTON 22 //S2 + S3 + S5
 
 //TM1638 Buttons - old definitions
-#define STRIPTEST_MODE_BUTTON 5 // not used
-#define SHIFT_BACK_BUTTON 1
+#define STRIPTEST_MODE_BUTTON 5 //S1 + S3 - not used?
 
 //EPROM default valuse storage
   const byte eeBrightness = 0; //eeprom brightness value address
@@ -146,28 +148,28 @@ void uiModes() //timer mode and related functions
       case RESET_TO_ZERO_BUTTON: //Buttons 2+3+5 resets to f0
         uiMode = 1; //Clear buttonPlueMinus before timer mode (uiMode 0)
       break;
-      case FOCUS_BUTTON:
-        uiMode = 4; //Focus light on/off
-      break;
-      case STRIPTEST_BUTTON:
+      case STRIPTEST_BUTTON: //S3
          uiMode = 2; //Strip Test Mode
       break;
-      case BRIGHTNESS_BUTTON:
+      case FOCUS_BUTTON: //S2
+        uiMode = 4; //Focus light on/off
+      break;
+      case BRIGHTNESS_BUTTON: //S4
         uiMode = 99; //Brightness set-up
         break;
-      case INCREMENT_BUTTON://F-stop increment set-up
+      case INCREMENT_BUTTON://F-stop increment set-up - S5
         uiMode = 14; 
       break;
-      case STRIPTEST_MODE_BUTTON:
+      case STRIPTEST_MODE_BUTTON: //- not used?:
         uiMode=16;
       break;
-      case 65:
-        uiMode = 18; //Correction set-up
+      case SCALE_SETUP_BUTTON: //S1 + S7
+        uiMode = 18; //Scaling set-up
       break;
-      case 129:
-        uiMode = 19; //Correction reset
+      case CANCEL_SCALE_BUTTON: //S1 + S8
+        uiMode = 19; //Scaling reset
       break;
-      case 96:
+      case SNAP_TO_SCALE_BUTTON: //S6 + S7
         uiMode = 20; // Snap to Stop mode
       break;
     }
@@ -186,31 +188,31 @@ void uiModes() //timer mode and related functions
       buttonPlusMinusValue = 0;
       uiMode = 0; //default mode
     break;
-    case 2:
+    case 2: //starts a strip test
       stripTest();
     break;
-    case 3:
+    case 3: //not used?
       uiMode = 22;
     break;
     case 4:
       focusOnOff(); // Focus Lamp on/off
     break;
-    case 12:
+    case 12: //not used?
       focusOnOff();
     break;
-    case 14:
+    case 14: //set increments
       fstopIncrementSetUp();
     break;
-    case 18:
+    case 18: //set up scaling
       scaleCalculator();
     break;
-    case 19:
+    case 19: //exit scaling
       clearCorrection();
     break;
-    case 99:
+    case 99: //adjust brightness
       brightnessSelector();
     break;
-    case 20: // Snap to Stop mode
+    case 20: // Snap to nearest Stop
       snapToNearestStop();
     break;
     default:

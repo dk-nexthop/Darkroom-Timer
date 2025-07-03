@@ -1,3 +1,4 @@
+
 void scaleCalculator()//determine f-stop scaling factor from length change proportion, based on 10cm
 {
   switch(tmButtons)
@@ -8,7 +9,7 @@ void scaleCalculator()//determine f-stop scaling factor from length change propo
       case SHIFT_MINUS_BUTTON:
         lengthRatio --;
       break;
-      case SHIFT_BACK_BUTTON:
+      case CANCEL_BUTTON:
        uiMode=0;
       break;
     }

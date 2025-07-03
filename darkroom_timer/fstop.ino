@@ -29,11 +29,11 @@ void fstopSelector()//f-stop and time setting function, single click button 1, d
   increment = timerInc; //pre-set increment value
   switch(tmButtons)
   {
-    case PLUS_BUTTON:
+    case PLUS_BUTTON: //S7
       if ((buttonPlusMinusValue+increment) <= 1000)
         buttonPlusMinusValue += increment;
     break;
-    case MINUS_BUTTON:
+    case MINUS_BUTTON: //S6
        if (buttonPlusMinusValue >= increment) // fixed Unsigned Integer Underflow
       buttonPlusMinusValue-= increment;
     break;
@@ -65,7 +65,7 @@ void fstopSelector()//f-stop and time setting function, single click button 1, d
   if (resumeTime != 0) tensSeconds = resumeTime; //resume time from timerCountdown() function
   timeMillis = millis() + (tensSeconds * 100); //f-stop conversion to millis for timer countdown
 
-  if (tmButtons == START_BUTTON )
+  if (tmButtons == START_BUTTON ) //S8
   {
     timerCountdown(tensSeconds);//timer with f-stop converted in time + enlargment correction time
     displayRefreshTracker += 1;
@@ -88,7 +88,7 @@ void fstopSelector()//f-stop and time setting function, single click button 1, d
   displayRefreshTracker = buttonPlusMinusValue; //value for display update check
 }
 
-void snapToNearestStop() {
+void snapToNearestStop() { //snaps to nearest stop value (i.e. if at f1.99 and on f1 intervals will snap to f2)
   if (timerInc > 0) { // Avoid division by zero
     int remainder = buttonPlusMinusValue % timerInc;
     if (remainder != 0) {
