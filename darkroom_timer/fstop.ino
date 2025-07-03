@@ -21,43 +21,8 @@ void fstopIncrementSetUp() //F-stop increment selector, long hold timer button
     displayRefreshTracker = i; //display trigger update
     delay(intervalButton);
 }
-/*
-void fstopIncrementSetUp() //F-stop increment selector, long hold timer button
-{
-    if (tmButtons==INCREMENT_BUTTON) plusminus++;
-    byte i = plusminus % timerIncrementSize; //Limit values to those available in the presets array
-    int newIncrement = timerIncrement[i]; // Get the new increment value
 
-    // Snap to the nearest stop logic
-    if (newIncrement != timerInc) { // Only snap if the increment has changed
-      int remainder = buttonPlusMinusValue % newIncrement;
-      if (remainder != 0) { // No need to snap if already on a perfect stop
-        if (remainder > newIncrement / 2) {
-          // Snap up to the next stop
-          buttonPlusMinusValue = buttonPlusMinusValue - remainder + newIncrement;
-        } else {
-          // Snap down to the previous stop
-          buttonPlusMinusValue = buttonPlusMinusValue - remainder;
-        }
-      }
-    }
-
-    timerInc = newIncrement; // Set the new increment
-    stepIdx = i;
-
-    if (i != displayRefreshTracker) {
-      clearStripLEDs();
-      tm.setLED(i+1, 1);
-      sprintf(tempString, "StEP %03d", timerInc);//set right align 0.00 format
-      displayText(tempString,5,99);
-    }
-
-    displayRefreshTracker = i; //display trigger update
-    delay(intervalButton);
-}
-*/
-
-void fstopSelector()//f-stop and time setting function, single click button 1
+void fstopSelector()//f-stop and time setting function, single click button 1, default ui mode
 {
   int steps; //steps counter
   int tensDisplay; //time value for display
@@ -100,13 +65,13 @@ void fstopSelector()//f-stop and time setting function, single click button 1
   if (resumeTime != 0) tensSeconds = resumeTime; //resume time from timerCountdown() function
   timeMillis = millis() + (tensSeconds * 100); //f-stop conversion to millis for timer countdown
 
-  if (tmButtons == 128 )
+  if (tmButtons == START_BUTTON )
   {
     timerCountdown(tensSeconds);//timer with f-stop converted in time + enlargment correction time
     displayRefreshTracker += 1;
   }
 
-  if (tmButtons == 1 ) //cancel after stop
+  if (tmButtons == CANCEL_BUTTON ) //cancel after stop
   {
     tm.displayText(" CANCEL  ");//cancel message
     delayTimer(readingDelay);//reading delay

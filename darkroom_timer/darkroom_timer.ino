@@ -31,16 +31,24 @@ bool baseExposure=false;
 #define START_LED_PIN 7 //Start button led pin
 #define CORR_LED_PIN 6 //Start button led pin
 
-//TM1638 Buttons
-#define BRIGHTNESS_BUTTON 8 
-#define STRIPTEST_BUTTON 4
-#define STRIPTEST_MODE_BUTTON 5
-#define INCREMENT_BUTTON 16
-#define SHIFT_BACK_BUTTON 1
-#define MINUS_BUTTON 32
-#define PLUS_BUTTON 64
+//TM1638 Single Buttons
+#define CANCEL_BUTTON 1 //S1
+#define FOCUS_BUTTON 2 //S2 
+#define STRIPTEST_BUTTON 4 //S3
+#define BRIGHTNESS_BUTTON 8 //S4 
+#define INCREMENT_BUTTON 16 //S5
+#define MINUS_BUTTON 32 //S6
+#define PLUS_BUTTON 64 //S7
+#define START_BUTTON 128 //S8
+
+//TM1638 Buttons Combos
 #define SHIFT_MINUS_BUTTON 33
 #define SHIFT_PLUS_BUTTON 65
+#define RESET_TO_ZERO_BUTTON 22
+
+//TM1638 Buttons - old definitions
+#define STRIPTEST_MODE_BUTTON 5 // not used
+#define SHIFT_BACK_BUTTON 1
 
 //EPROM default valuse storage
   const byte eeBrightness = 0; //eeprom brightness value address
@@ -135,10 +143,10 @@ void uiModes() //timer mode and related functions
     plusminus=0;
     switch(tmButtons)
     {
-      case 0x16:
+      case RESET_TO_ZERO_BUTTON: //Buttons 2+3+5 resets to f0
         uiMode = 1; //Clear buttonPlueMinus before timer mode (uiMode 0)
       break;
-      case 0x02:
+      case FOCUS_BUTTON:
         uiMode = 4; //Focus light on/off
       break;
       case STRIPTEST_BUTTON:
@@ -160,7 +168,7 @@ void uiModes() //timer mode and related functions
         uiMode = 19; //Correction reset
       break;
       case 96:
-        uiMode = 20; //Correction reset
+        uiMode = 20; // Snap to Stop mode
       break;
     }
   }
@@ -174,7 +182,7 @@ void uiModes() //timer mode and related functions
  
   switch (uiMode)
     {
-    case 1: //
+    case 1: //resets to f0 when you hold buttons 2+3+5
       buttonPlusMinusValue = 0;
       uiMode = 0; //default mode
     break;
