@@ -21,6 +21,41 @@ void fstopIncrementSetUp() //F-stop increment selector, long hold timer button
     displayRefreshTracker = i; //display trigger update
     delay(intervalButton);
 }
+/*
+void fstopIncrementSetUp() //F-stop increment selector, long hold timer button
+{
+    if (tmButtons==INCREMENT_BUTTON) plusminus++;
+    byte i = plusminus % timerIncrementSize; //Limit values to those available in the presets array
+    int newIncrement = timerIncrement[i]; // Get the new increment value
+
+    // Snap to the nearest stop logic
+    if (newIncrement != timerInc) { // Only snap if the increment has changed
+      int remainder = buttonPlusMinusValue % newIncrement;
+      if (remainder != 0) { // No need to snap if already on a perfect stop
+        if (remainder > newIncrement / 2) {
+          // Snap up to the next stop
+          buttonPlusMinusValue = buttonPlusMinusValue - remainder + newIncrement;
+        } else {
+          // Snap down to the previous stop
+          buttonPlusMinusValue = buttonPlusMinusValue - remainder;
+        }
+      }
+    }
+
+    timerInc = newIncrement; // Set the new increment
+    stepIdx = i;
+
+    if (i != displayRefreshTracker) {
+      clearStripLEDs();
+      tm.setLED(i+1, 1);
+      sprintf(tempString, "StEP %03d", timerInc);//set right align 0.00 format
+      displayText(tempString,5,99);
+    }
+
+    displayRefreshTracker = i; //display trigger update
+    delay(intervalButton);
+}
+*/
 
 void fstopSelector()//f-stop and time setting function, single click button 1
 {
@@ -30,15 +65,15 @@ void fstopSelector()//f-stop and time setting function, single click button 1
   switch(tmButtons)
   {
     case PLUS_BUTTON:
-      if ((buttonPlusMinusValue+increment)<999)
+      if ((buttonPlusMinusValue+increment) <= 1000)
         buttonPlusMinusValue += increment;
     break;
     case MINUS_BUTTON:
-      if (( buttonPlusMinusValue-increment)>0)
+       if (buttonPlusMinusValue >= increment) // fixed Unsigned Integer Underflow
       buttonPlusMinusValue-= increment;
     break;
   }
-  buttonPlusMinusValue = constrain(buttonPlusMinusValue, 0, 1000); //f-stop upper limit of 10.00 corresponding to ca. 17.07min
+  buttonPlusMinusValue = constrain(buttonPlusMinusValue, 0, 999); //f-stop upper limit of 10.00 corresponding to ca. 17.07min
 
   if (loadDefault)
   {
@@ -55,9 +90,9 @@ void fstopSelector()//f-stop and time setting function, single click button 1
   if (increment == 33){ // 1/3rd correction to avoid bad rounding of 3 * 1/3rd = 0.99
     steps = buttonPlusMinusValue / increment;//count how many steps of 33
     int multipliedVal = steps * increment; //F-stop value before correction
-    if (steps % 3 == 0 && steps > 0) FStop = multipliedVal + (steps / 3);//full f-stops correction
+    if (steps % 3 == 0 && steps > 0 && buttonPlusMinusValue < 966) FStop = multipliedVal + (steps / 3);//full f-stops correction
     if (steps % 3 != 0 && steps <= 29) FStop = multipliedVal + ((steps - steps % 3 ) / 3); //fractions f-stops correction, up to 9.90
-    buttonPlusMinusValue = (steps > 29) ? 1000 : ((steps <= 0) ? 0 : buttonPlusMinusValue); //F-stop  min 0.00x
+    buttonPlusMinusValue = (steps <= 0) ? 0 : buttonPlusMinusValue; //F-stop  min 0.00x
   }
 
   tensSeconds = fstop2TensSeconds(FStop + deltaFStop); //final tens calculation including scaling factor and lighting delay
@@ -87,3 +122,23 @@ void fstopSelector()//f-stop and time setting function, single click button 1
   }
   displayRefreshTracker = buttonPlusMinusValue; //value for display update check
 }
+
+void snapToNearestStop() {
+  if (timerInc > 0) { // Avoid division by zero
+    int remainder = buttonPlusMinusValue % timerInc;
+    if (remainder != 0) {
+      if (remainder > timerInc / 2) {
+        // Snap up
+        buttonPlusMinusValue = buttonPlusMinusValue - remainder + timerInc;
+      } else {
+        // Snap down
+        buttonPlusMinusValue = buttonPlusMinusValue - remainder;
+      }
+    }
+  }
+  // Set mode back to default
+  uiMode = 0;
+  // Refresh display
+  displayRefreshTracker = 10000;
+}
+

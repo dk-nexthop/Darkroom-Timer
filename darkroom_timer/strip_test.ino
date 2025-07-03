@@ -93,7 +93,13 @@ void stripTest()//select strip number for stripBuilder(), simple click button 2
     }
     displayRefreshTracker += 1;
     if (!stripTestMode) break;
-    delay(1000);
+    //delay(1000);
+     // Wait for the start button to be pressed before the next exposure
+    while(buttonsRead() != 128) {
+      // Do nothing, just wait
+      delay(50); // A short delay to prevent the processor from locking up
+    }
+
   }
   stripTestMode=false;
   FStop=fstops[0];

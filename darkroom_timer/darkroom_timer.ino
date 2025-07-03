@@ -159,6 +159,9 @@ void uiModes() //timer mode and related functions
       case 129:
         uiMode = 19; //Correction reset
       break;
+      case 96:
+        uiMode = 20; //Correction reset
+      break;
     }
   }
   else
@@ -198,6 +201,9 @@ void uiModes() //timer mode and related functions
     break;
     case 99:
       brightnessSelector();
+    break;
+    case 20: // Snap to Stop mode
+      snapToNearestStop();
     break;
     default:
      fstopSelector(); //default mode
